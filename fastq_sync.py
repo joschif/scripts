@@ -177,6 +177,8 @@ if __name__ == "__main__":
                                 seq2_dict.pop(s1_name)
                             else:
                                 count_invalid += 1
+                                seq1_dict.pop(s1_name)
+                                seq2_dict.pop(s1_name)
 
                         if not s2_finished and s2_name in seq1_dict:
                             if both_valid(seq1_dict[s2_name], seq2_dict[s2_name], min_len):
@@ -187,11 +189,11 @@ if __name__ == "__main__":
                                 seq2_dict.pop(s2_name)
                             else:
                                 count_invalid += 1
+                                seq1_dict.pop(s2_name)
+                                seq2_dict.pop(s2_name)
 
                         if count_valid % 100000 == 0:
-                            print('''{0} valid reads written. 
-                        {1} invalid reads discarded.
-                                '''.format(count_valid, count_invalid))
+                            print('.' end='')
 
                     # Treat all unpaired reads
                     for r in seq1_dict.values():
@@ -232,6 +234,8 @@ if __name__ == "__main__":
                             seq2_dict.pop(s1_name)
                         else:
                             count_invalid += 1
+                            seq1_dict.pop(s1_name)
+                            seq2_dict.pop(s1_name)
 
                     if not s2_finished and s2_name in seq1_dict:
                         if both_valid(seq1_dict[s2_name], seq2_dict[s2_name], min_len):
@@ -242,11 +246,11 @@ if __name__ == "__main__":
                             seq2_dict.pop(s2_name)
                         else:
                             count_invalid += 1
+                            seq1_dict.pop(s2_name)
+                            seq2_dict.pop(s2_name)
 
                     if count_valid % 100000 == 0:
-                        print('''{0} valid reads written. 
-                    {1} invalid reads discarded.
-                            '''.format(count_valid, count_invalid))
+                        print('.' end='')
 
                 # Treat all unpaired reads
                 for r in seq1_dict.values():
