@@ -262,7 +262,7 @@ if __name__ == "__main__":
                     count_single +=1
                     r.write_to_file(out3)
 
-    print('''ALL READS HAVE BEEN PROCESSED
+    print('''\nALL READS HAVE BEEN PROCESSED
 {0} valid paired reads written. 
 {1} single reads written. 
 {2} invalid reads discarded.'''.format(count_valid, count_single, count_invalid))
