@@ -2,6 +2,7 @@
 
 # Shamelessly stolen and modified from @enormandeau (https://github.com/enormandeau)
 
+from __future__ import print_function
 import sys
 import argparse
 import gzip
@@ -152,12 +153,12 @@ if __name__ == "__main__":
                 with open_gz(out_prefix + "_singles" + out_suffix, "w") as out3:
                     while not (s1_finished and s2_finished):
                         try:
-                            s1 = seq1.next()
+                            s1 = next(s1)
                             s1_name = s1.get_shortname(separator)
                         except:
                             s1_finished = True
                         try:
-                            s2 = seq2.next()
+                            s2 = next(s2)
                             s2_name = s2.get_shortname(separator)
                         except:
                             s2_finished = True
@@ -193,7 +194,7 @@ if __name__ == "__main__":
                                 seq2_dict.pop(s2_name)
 
                         if count_valid % 100000 == 0:
-                            print('.' end='')
+                            print('.', end='')
 
                     # Treat all unpaired reads
                     for r in seq1_dict.values():
@@ -209,12 +210,12 @@ if __name__ == "__main__":
             with open_gz(out_prefix + "_singles" + out_suffix, "w") as out3:
                 while not (s1_finished and s2_finished):
                     try:
-                        s1 = seq1.next()
+                        s1 = next(s1)
                         s1_name = s1.get_shortname(separator)
                     except:
                         s1_finished = True
                     try:
-                        s2 = seq2.next()
+                        s2 = next(s2)
                         s2_name = s2.get_shortname(separator)
                     except:
                         s2_finished = True
@@ -250,7 +251,7 @@ if __name__ == "__main__":
                             seq2_dict.pop(s2_name)
 
                     if count_valid % 100000 == 0:
-                        print('.' end='')
+                        print('.', end='')
 
                 # Treat all unpaired reads
                 for r in seq1_dict.values():
