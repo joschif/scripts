@@ -153,12 +153,12 @@ if __name__ == "__main__":
                 with open_gz(out_prefix + "_singles" + out_suffix, "w") as out3:
                     while not (s1_finished and s2_finished):
                         try:
-                            s1 = next(s1)
+                            s1 = next(seq1)
                             s1_name = s1.get_shortname(separator)
                         except:
                             s1_finished = True
                         try:
-                            s2 = next(s2)
+                            s2 = next(seq2)
                             s2_name = s2.get_shortname(separator)
                         except:
                             s2_finished = True
@@ -210,12 +210,12 @@ if __name__ == "__main__":
             with open_gz(out_prefix + "_singles" + out_suffix, "w") as out3:
                 while not (s1_finished and s2_finished):
                     try:
-                        s1 = next(s1)
+                        s1 = next(seq1)
                         s1_name = s1.get_shortname(separator)
                     except:
                         s1_finished = True
                     try:
-                        s2 = next(s2)
+                        s2 = next(seq2)
                         s2_name = s2.get_shortname(separator)
                     except:
                         s2_finished = True
