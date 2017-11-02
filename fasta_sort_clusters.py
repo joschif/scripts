@@ -79,7 +79,7 @@ def read_csv_tsv(input_file):
     out_dict = dict()
     with open(input_file, 'r') as f:
         for line in f:
-            line = line.split(splitchar)
+            line = line.strip().split(splitchar)
             out_dict[line[0]] = line[1]
 
     return out_dict
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     contigs = fasta_parser(args.FASTA)
     clusters = read_csv_tsv(args.CLUSTERS)
 
-    out_dir = args.out
+    out_dir = args.OUT
     if not out_dir.endswith('/'):
         out_dir += '/'
 
