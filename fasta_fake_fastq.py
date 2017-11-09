@@ -92,7 +92,7 @@ def fasta_parser(input_file):
             yield Fasta(name, sequence)
 
 
-def open_gz(infile, mode="r"):
+def open_gz(infile, mode="rt"):
     """Takes input and uncompresses gzip if needed
     """
 
@@ -109,6 +109,6 @@ if __name__ == "__main__":
     fasta_in = fasta_parser(args.FASTA)
     sym = args.qualsym
 
-    with open_gz(args.FASTQ, 'w') as fout:
+    with open_gz(args.FASTQ, 'wt') as fout:
         for read in fasta_in:
             read.to_fake_fastq(sym).write_to_file(fout)

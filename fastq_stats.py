@@ -65,7 +65,7 @@ def fastq_parser(infile):
             yield Fastq(name, seq, name2, qual)
 
 
-def open_gz(infile, mode="r"):
+def open_gz(infile, mode="rt"):
     """Takes input and uncompresses gzip if needed
     """
 

@@ -86,7 +86,7 @@ def read_csv_tsv(input_file):
 
 
 
-def open_gz(infile, mode="r"):
+def open_gz(infile, mode="rt"):
     """Takes input and uncompresses gzip if needed
     """
 

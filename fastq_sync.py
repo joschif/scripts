@@ -94,7 +94,7 @@ def both_valid(fq1, fq2, l):
     return fq1.len >= l and fq2.len >= l
 
 
-def open_gz(infile, mode="r"):
+def open_gz(infile, mode="rt"):
     """Takes input and uncompresses gzip if needed
     """
 
@@ -148,9 +148,9 @@ if __name__ == "__main__":
     count_single = 0
 
     if not interleaved:
-        with open_gz(out_prefix + "_pairs_1" + out_suffix, "w") as out1:
-            with open_gz(out_prefix + "_pairs_2" + out_suffix, "w") as out2:
-                with open_gz(out_prefix + "_singles" + out_suffix, "w") as out3:
+        with open_gz(out_prefix + "_pairs_1" + out_suffix, "wt") as out1:
+            with open_gz(out_prefix + "_pairs_2" + out_suffix, "wt") as out2:
+                with open_gz(out_prefix + "_singles" + out_suffix, "wt") as out3:
                     while not (s1_finished and s2_finished):
                         try:
                             s1 = next(seq1)
@@ -206,8 +206,8 @@ if __name__ == "__main__":
                         r.write_to_file(out3)
 
     else:         
-        with open_gz(out_prefix + "_pairs_interleaved" + out_suffix, "w") as out:
-            with open_gz(out_prefix + "_singles" + out_suffix, "w") as out3:
+        with open_gz(out_prefix + "_pairs_interleaved" + out_suffix, "wt") as out:
+            with open_gz(out_prefix + "_singles" + out_suffix, "wt") as out3:
                 while not (s1_finished and s2_finished):
                     try:
                         s1 = next(seq1)

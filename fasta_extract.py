@@ -68,7 +68,7 @@ def fasta_parser(input_file):
             yield Fasta(name, sequence)
 
 
-def open_gz(infile, mode="r"):
+def open_gz(infile, mode="rt"):
     """Takes input and uncompresses gzip if needed
     """
 

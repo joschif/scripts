@@ -22,7 +22,7 @@ def interface():
 	return args
 
 
-def open_gz(infile, mode="r"):
+def open_gz(infile, mode="rt"):
 	"""Takes input and uncompresses gzip if needed
 	"""
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 				IDs[line] = 0
 
 
-   	with open_gz(seq_file, "r") as f:
+   	with open_gz(seq_file) as f:
    		for line in f:
    			if line.startswith("@") or line.startswith(">"):
    				for ID in IDs.keys():
