@@ -43,22 +43,29 @@ if __name__ == "__main__":
     # All IDs in cluster to set
     contig_ids = []
     with open(contigs, 'r') as f:
-        line = f.readline()
+        line = f.readline().strip()
         contig_ids.append(line)
         if line.startswith('>'):
             for line in f:
                 if line.startswith('>'):
-                    contig_ids.append(line)
+                    contig_ids.append(line.strip())
         else:
             for line in f:
-                contig_ids.append(line)
+                contig_ids.append(line.strip())
 
     # Extract from BAM file
     with gzip.open(out_file, 'wt') as f:
         for ID in contig_ids:
-            for read in bam_file.fetch(ID):
-                f.write(read.query_sequence + '\n')
-                f.write(read.query_name + '\n')
+            try:
+                for read in bam_file.fetch(ID):
+                    name = read.query_name
+                    if not name.startswith('>'):
+                        name = '>' + name
+                    f.write(name + '\n')
+                    f.write(read.query_sequence + '\n')
+            except ValueError as err:
+                print("Reference '{0}' not found.".format(ID))
+                print(err)
 
 
 
