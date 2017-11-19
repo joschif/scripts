@@ -44,12 +44,13 @@ if __name__ == "__main__":
     contig_ids = []
     with open(contigs, 'r') as f:
         line = f.readline().strip()
-        contig_ids.append(line)
         if line.startswith('>'):
+            contig_ids.append(line[1:])
             for line in f:
                 if line.startswith('>'):
-                    contig_ids.append(line.strip())
+                    contig_ids.append(line.strip()[1:])
         else:
+            contig_ids.append(line)
             for line in f:
                 contig_ids.append(line.strip())
 
