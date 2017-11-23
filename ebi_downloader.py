@@ -13,20 +13,16 @@ import urllib2
 from urllib2 import URLError
 
 # Parse script parameters
-def interface():
-    function_file_type_list = ["InterProScan", "GOAnnotations", "GOSlimAnnotations"]
-    sequences_file_type_list = ["ProcessedReads", "ReadsWithPredictedCDS", "ReadsWithMatches", "ReadsWithoutMatches", "PredictedCDS", "PredictedCDSWithoutAnnotation", "PredictedCDSWithAnnotation", "PredictedORFWithoutAnnotation", "ncRNA-tRNA-FASTA"]
-    taxonomy_file_type_list = ["5S-rRNA-FASTA", "16S-rRNA-FASTA", "23S-rRNA-FASTA", "OTU-TSV", "OTU-BIOM", "OTU-table-HDF5-BIOM", "OTU-table-JSON-BIOM", "NewickTree", "NewickPrunedTree"]
-    # Default list of available file types
-    default_file_type_list = sequences_file_type_list + function_file_type_list + taxonomy_file_type_list
+def interface(default_types):
 
     parser = argparse.ArgumentParser(description="MGPortal bulk download tool.")
     parser.add_argument("-p", "--project_id",
                         dest="PROJECT",
-                        help="Project accession (e.g. ERP001736, SRP000319) from a project which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/projects). Either this or sample ID are required.")
+                        required=True,
+                        help="Project accession (e.g. ERP001736, SRP000319) from a project which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/projects). Required.")
     parser.add_argument("-s", "--sample_id",
                         dest="SAMPLE",
-                        help="Sample accession (e.g. SRS560248, ERS979832) from a sample which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/samples). Either this or project ID are required.")    
+                        help="Sample accession (e.g. SRS560248, ERS979832) from a sample which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/samples). Must be specified with a project ID.")    
     parser.add_argument("-r", "--run_id",
                         dest="RUN",
                         help="Run accession (e.g. SRR1174061, ERR647655) from a run which is publicly available on the EBI Metagenomics website. Must be specified with a sample ID.")
@@ -40,11 +36,15 @@ def interface():
                         required=True)
     parser.add_argument("-t", "--file_type",
                         dest="type",
-                        help="Supported file types are: AllFunction, AllTaxonomy, AllSequences OR a comma-separated list of supported file types: " + ', '.join(default_file_type_list) + " OR a single file type.**OPTIONAL**\nDownloads all file types if not provided.",
-                        required=False)
+                        help="Supported file types are: AllFunction, AllTaxonomy, AllSequences OR a comma-separated list of supported file types: " + ', '.join(default_file_type_list) + " OR a single file type.\nDownloads all file types if not provided.",
+                        required=False)    
+    parser.add_argument("--list-only",
+                        dest="list_only",
+                        help="Only lists the project runs without downloading them.",
+                        action="store_true")
     parser.add_argument("-vb", "--verbose",
                         dest="verbose",
-                        help="Switches on the verbose mode.**OPTIONAL**",
+                        help="Switches on the verbose mode.",
                         action="store_true")
 
     args = parser.parse_args()
@@ -97,12 +97,11 @@ def _get_number_of_chunks(url_template, study_id, sample_id, run_id, version, do
         return 0
 
 
-def _get_file_stream_handler(url_template, study_id):
+def _get_file_stream_handler(url_get_project_runs):
     """
     Returns a file stream handler for the given URL.
     """
     print "Getting the list of project runs..."
-    url_get_project_runs = url_template % (study_id)
     try:
         req = urllib2.Request(url=url_get_project_runs, headers={'Content-Type': 'text/plain'})
         return urllib2.urlopen(req)
@@ -134,14 +133,21 @@ def _print_program_settings(project_id, sample_id, run_id, version, selected_fil
 
 
 if __name__ == "__main__":
-    args = interface()
+    function_file_type_list = ["InterProScan", "GOAnnotations", "GOSlimAnnotations"]
+    sequences_file_type_list = ["ProcessedReads", "ReadsWithPredictedCDS", "ReadsWithMatches", "ReadsWithoutMatches", "PredictedCDS", "PredictedCDSWithoutAnnotation", "PredictedCDSWithAnnotation", "PredictedORFWithoutAnnotation", "ncRNA-tRNA-FASTA"]
+    taxonomy_file_type_list = ["5S-rRNA-FASTA", "16S-rRNA-FASTA", "23S-rRNA-FASTA", "OTU-TSV", "OTU-BIOM", "OTU-table-HDF5-BIOM", "OTU-table-JSON-BIOM", "NewickTree", "NewickPrunedTree"]
+    # Default list of available file types
+    default_file_type_list = sequences_file_type_list + function_file_type_list + taxonomy_file_type_list
+    
+    args = interface(default_file_type_list)
 
     verbose = args.verbose
+    list_only = args.list_only
 
     # Parse the project accession
-    study_id = args.PROJECT
-    sample_id = args.SAMPLE
-    run_id = args.RUN
+    study = args.PROJECT
+    sample = args.SAMPLE
+    run = args.RUN
 
     # Parse the values for the file type parameter
     selected_file_types_list = []
@@ -169,13 +175,13 @@ if __name__ == "__main__":
     version = args.version
 
     root_url = "https://www.ebi.ac.uk"
-    study_url_template = root_url + "/metagenomics/projects/%s/runs"
+    query_url = root_url + "/metagenomics/projects/%s/runs" % (study)
     number_of_chunks_url_template = root_url + "/metagenomics/projects/%s/samples/%s/runs/%s/results/versions/%s/%s/%s/chunks"
     chunk_url_template = root_url + "/metagenomics/projects/%s/samples/%s/runs/%s/results/versions/%s/%s/%s/chunks/%s"
     download_url_template = root_url + "/metagenomics/projects/%s/samples/%s/runs/%s/results/versions/%s/%s/%s"
 
     # Print out the program settings
-    _print_program_settings(study_id, sample_id, run_id, version, selected_file_types_list, args.OUT, root_url)
+    _print_program_settings(study, sample, run, version, selected_file_types_list, args.OUT, root_url)
 
     # Iterating over all file types
     for file_type in selected_file_types_list:
@@ -245,29 +251,40 @@ if __name__ == "__main__":
             fileExtension = ".fasta.gz"
 
         # Retrieve a file stream handler from the given URL and iterate over each line (each run) and build the download link using the variables from above
-        print(study_url_template)
-        file_stream_handler = _get_file_stream_handler(study_url_template, study_id)
+
+        file_stream_handler = _get_file_stream_handler(query_url)
         reader = csv.reader(file_stream_handler, delimiter=',')
-        for entry in reader:
-            print(entry)
+
+        if list_only:
+            for study_id, sample_id, run_id in reader:
+                if (not sample) or (sample == sample_id):
+                    if (not run) or (run == run_id):
+                        print study_id + ", " + sample_id + ", " + run_id
+
         for study_id, sample_id, run_id in reader:
-            print study_id + ", " + sample_id + ", " + run_id
+            if (not sample) or (sample == sample_id):
+                if (not run) or (run == run_id):
+                    print study_id + ", " + sample_id + ", " + run_id
 
-            output_path = args['output_path'] + "/" + study_id + "/" + file_type
-            if not os.path.exists(output_path):
-                os.makedirs(output_path)
+                    if not args.OUT.endswith("/"):
+                        output_path = args.OUT + "/"
+                    else:
+                        output_path = args.OUT
 
-            if is_chunked:
-                number_of_chunks = _get_number_of_chunks(number_of_chunks_url_template, study_id, sample_id, run_id,
-                                                         version, domain, file_type)
+                    output_path = output_path + study_id + "/" + file_type
+                    if not os.path.exists(output_path):
+                        os.makedirs(output_path)
 
-                for chunk in range(1, number_of_chunks + 1):
-                    output_file_name = output_path + "/" + run_id.replace(" ", "").replace(",", "-") + "_" + file_type + "_" + str(chunk) + fileExtension
-                    rootUrl = chunk_url_template % (study_id, sample_id, run_id, version, domain, file_type, chunk)
-                    _download_resource_by_url(rootUrl, output_file_name)
-            else:
-                output_file_name = output_path + "/" + run_id.replace(" ", "").replace(",", "-") + "_" + file_type + fileExtension
-                rootUrl = download_url_template % (study_id, sample_id, run_id, version, domain, file_type)
-                _download_resource_by_url(rootUrl, output_file_name)
+                    if is_chunked:
+                        number_of_chunks = _get_number_of_chunks(number_of_chunks_url_template, study_id, sample_id, run_id,version, domain, file_type)
+
+                        for chunk in range(1, number_of_chunks + 1):
+                            output_file_name = output_path + "/" + run_id.replace(" ", "").replace(",", "-") + "_" + file_type + "_" + str(chunk) + fileExtension
+                            rootUrl = chunk_url_template % (study_id, sample_id, run_id, version, domain, file_type, chunk)
+                            _download_resource_by_url(rootUrl, output_file_name)
+                    else:
+                        output_file_name = output_path + "/" + run_id.replace(" ", "").replace(",", "-") + "_" + file_type + fileExtension
+                        rootUrl = download_url_template % (study_id, sample_id, run_id, version, domain, file_type)
+                        _download_resource_by_url(rootUrl, output_file_name)
 
     print "Program finished."
