@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2.7
 
 '''
 Stolen and slightly modified from @mscheremetjew (https://github.com/mscheremetjew)

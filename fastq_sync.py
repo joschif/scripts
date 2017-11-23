@@ -2,7 +2,6 @@
 
 # Shamelessly stolen and modified from @enormandeau (https://github.com/enormandeau)
 
-from __future__ import print_function
 import sys
 import argparse
 import gzip
@@ -193,9 +192,6 @@ if __name__ == "__main__":
                                 seq1_dict.pop(s2_name)
                                 seq2_dict.pop(s2_name)
 
-                        if count_valid % 100000 == 0:
-                            print('.', end='')
-
                     # Treat all unpaired reads
                     for r in seq1_dict.values():
                         count_single += 1
@@ -250,9 +246,6 @@ if __name__ == "__main__":
                             seq1_dict.pop(s2_name)
                             seq2_dict.pop(s2_name)
 
-                    if count_valid % 100000 == 0:
-                        print('.', end='')
-
                 # Treat all unpaired reads
                 for r in seq1_dict.values():
                     count_single += 1
@@ -261,8 +254,3 @@ if __name__ == "__main__":
                 for r in seq2_dict.values():
                     count_single +=1
                     r.write_to_file(out3)
-
-    print('''\nALL READS HAVE BEEN PROCESSED
-{0} valid paired reads written. 
-{1} single reads written. 
-{2} invalid reads discarded.'''.format(count_valid, count_single, count_invalid))
