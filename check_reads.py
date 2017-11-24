@@ -9,7 +9,7 @@ import itertools
 
 # FUNC
 def interface():
-    parser = argparse.ArgumentParser(description='Simple script to check if read filed in a directory are paired or not. Renames the files appropriately. More like an educated guess, but fast.')
+    parser = argparse.ArgumentParser(description='Simple script to check if read filed in a directory are paired or not. Renames the files appropriately. Quick and dirty, more like an educated guess, but fast.')
 
     parser.add_argument('READS_DIR',
                         type=str,
