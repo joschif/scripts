@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
+
 '''
 Command line tool for downloading raw reads form ENA
 
 URL scaffold for run list:
 https://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=<ACCESSION_ID>&result=read_run&fields=study_accession,sample_accession,secondary_sample_accession,experiment_accession,run_accession,tax_id,scientific_name,instrument_model,library_layout,fastq_ftp,fastq_galaxy,submitted_ftp,submitted_galaxy,sra_ftp,sra_galaxy,cram_index_ftp,cram_index_galaxy&download=txt
 
-Parses FTP addresses from the returned list and Downloads the read files individually.
+Parses FTP addresses from the returned list and downloads the read files individually.
 '''
-
 
 
 import argparse
@@ -17,7 +17,7 @@ import urllib.request
 from urllib.parse import urlparse
 from urllib.error import HTTPError
 
-# Parse script parameters
+# FUNC
 def interface():
 
     parser = argparse.ArgumentParser(description="ENA Downloader.")
@@ -40,18 +40,21 @@ def interface():
     return args
 
 
-def make_url(acc_id):
+def make_runlist_url(acc_id):
+    """ Makes URL to get run list of accession ID
+    """
+    
     root_url = "https://www.ebi.ac.uk/"
     query = "ena/data/warehouse/filereport?accession={0}&result=read_run&fields=".format(acc_id)
     fields = "study_accession,sample_accession,secondary_sample_accession,experiment_accession,run_accession,tax_id,scientific_name,instrument_model,library_layout,fastq_ftp,fastq_galaxy,submitted_ftp,submitted_galaxy,sra_ftp,sra_galaxy,cram_index_ftp,cram_index_galaxy"
     query_url = root_url + query + fields + "&download=txt"
-
     return query_url
 
 
-def response(url):
+def get_runlist(url):
     """ Returns the response for a given URL
     """
+    
     try:
         return urllib.request.urlopen(url)
     except HTTPError as http_err:
@@ -62,7 +65,7 @@ def response(url):
         raise
 
 
-def download(url, output_path):
+def download_reads(url, output_path):
     """ Downloads the contents of a given URL
     """
 
@@ -76,7 +79,7 @@ def download(url, output_path):
         raise  
 
 
-
+# MAIN
 if __name__ == "__main__":
     args = interface()
     verbose = args.verbose
@@ -94,8 +97,8 @@ if __name__ == "__main__":
     read_type = args.read_type
 
     for acc_id in acc_ids:
-        query_url = make_url(acc_id)
-        run_list_response = response(query_url)
+        query_url = make_runlist_url(acc_id)
+        run_list_response = get_runlist(query_url)
 
         if not run_list_response:
             continue
@@ -136,7 +139,7 @@ if __name__ == "__main__":
                 fastq_name = f.split('/')[-1]
                 fastq_names.append(fastq_name)
                 output_path = out + fastq_name
-                download(fastq_url, output_path)
+                download_reads(fastq_url, output_path)
 
             if verbose:
                 print("Success.")
