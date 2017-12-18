@@ -34,7 +34,7 @@ def interface():
     parser.add_argument("-t", "--type",
                         dest="read_type",
                         default="fastq_ftp",
-                        help="Type of reads you wan t to download. Options are: fastq_ftp, fastq_galaxy, submitted_ftp, submitted_galaxy.")
+                        help="Type of reads you want to download. Options are: fastq_ftp, fastq_galaxy, submitted_ftp, submitted_galaxy.")
 
     args = parser.parse_args()
     return args
@@ -71,6 +71,7 @@ def download_reads(url, output_path):
 
     try:
         urllib.request.urlretrieve(url, output_path)
+        return True
     except HTTPError:
         print("\nThe read file with the URL {0} cound not be downloaded. \n".format(url))
         return False
@@ -137,15 +138,16 @@ if __name__ == "__main__":
             for f in fastq_files:
                 fastq_url = "ftp://" + f
                 fastq_name = f.split('/')[-1]
-                fastq_names.append(fastq_name)
                 output_path = out + fastq_name
-                download_reads(fastq_url, output_path)
+                success = download_reads(fastq_url, output_path)
+                if success:
+                    fastq_names.append(fastq_name)
 
-            if verbose:
-                print("Success.")
-
-            with open(logout + "runs.log", 'a') as log:
-                log.write('\t'.join([run_id, layout] + fastq_names) + '\n')
+            if success:
+                if verbose:
+                    print("Success.")
+                with open(logout + "runs.log", 'a') as log:
+                    log.write('\t'.join([run_id, layout] + fastq_names) + '\n')
 
 
 
