@@ -5,7 +5,7 @@ import argparse
 import sys
 
 
-# CLASS 
+# CLASS
 class Fastq(object):
     """Fastq object with name and sequence
     """
@@ -37,7 +37,8 @@ class Fastq(object):
 
 # FUNC
 def interface():
-    parser = argparse.ArgumentParser(description='Takes one ore more (multi-)FASTA file(s) and calculates basic stats for quality estimation. Returns the stats as tab separated values.')
+    parser = argparse.ArgumentParser(
+        description='Takes one ore more (multi-)FASTA file(s) and calculates basic stats for quality estimation. Returns the stats as tab separated values.')
 
     parser.add_argument('FASTA',
                         type=str,
@@ -52,7 +53,7 @@ def interface():
 def fastq_parser(infile):
     """Takes a fastq file infile and returns a fastq object iterator
     """
-    
+
     with open_gz(infile) as f:
         while True:
             name = f.readline().strip()
@@ -83,7 +84,7 @@ if __name__ == "__main__":
         basename = '.'.join(fasta_file.split('.')[0:-1]).split('/')[-1]
         fasta_seqs = fastq_parser(fasta_file)
 
-        seq_num = N_num = GC_num = 0 
+        seq_num = N_num = GC_num = 0
         contigs = []
 
         for record in fasta_seqs:
@@ -109,8 +110,8 @@ if __name__ == "__main__":
                 N50 = l
                 break
 
-        stats = [basename, seq_num, assembly_len, mean_len, longest_contig, shortest_contig, GC_cont, N_cont, N50, L50]
+        stats = [basename, seq_num, assembly_len, mean_len,
+                 longest_contig, shortest_contig, GC_cont, N_cont, N50, L50]
         line = [str(n) for n in stats]
         print('\t'.join(line) + '\n')
         sys.stdout.write('\t'.join(line) + '\n')
-

@@ -26,7 +26,7 @@ def interface():
                         nargs='+')
     parser.add_argument("-o", "--output_path",
                         dest="OUT",
-                        help="Location of the output directory, where the downloadable files get stored. If not specified, the downloader will load all raw files in the current working directory.")  
+                        help="Location of the output directory, where the downloadable files get stored. If not specified, the downloader will load all raw files in the current working directory.")
     parser.add_argument("--verbose",
                         dest="verbose",
                         help="Switches on the verbose mode.",
@@ -43,9 +43,10 @@ def interface():
 def make_runlist_url(acc_id):
     """ Makes URL to get run list of accession ID
     """
-    
+
     root_url = "https://www.ebi.ac.uk/"
-    query = "ena/data/warehouse/filereport?accession={0}&result=read_run&fields=".format(acc_id)
+    query = "ena/data/warehouse/filereport?accession={0}&result=read_run&fields=".format(
+        acc_id)
     fields = "study_accession,sample_accession,secondary_sample_accession,experiment_accession,run_accession,tax_id,scientific_name,instrument_model,library_layout,fastq_ftp,fastq_galaxy,submitted_ftp,submitted_galaxy,sra_ftp,sra_galaxy,cram_index_ftp,cram_index_galaxy"
     query_url = root_url + query + fields + "&download=txt"
     return query_url
@@ -54,11 +55,12 @@ def make_runlist_url(acc_id):
 def get_runlist(url):
     """ Returns the response for a given URL
     """
-    
+
     try:
         return urllib.request.urlopen(url)
     except HTTPError as http_err:
-        print('\nThe generated URL {0} cound not be opened. Maybe the accession ID was not valid. \n'.format(url))
+        print(
+            '\nThe generated URL {0} cound not be opened. Maybe the accession ID was not valid. \n'.format(url))
         pass
     except IOError as io_err:
         print(io_err)
@@ -73,11 +75,12 @@ def download_reads(url, output_path):
         urllib.request.urlretrieve(url, output_path)
         return True
     except HTTPError:
-        print("\nThe read file with the URL {0} cound not be downloaded. \n".format(url))
+        print(
+            "\nThe read file with the URL {0} cound not be downloaded. \n".format(url))
         return False
     except IOError as io_err:
         print(io_err)
-        raise  
+        raise
 
 
 # MAIN
@@ -108,10 +111,10 @@ if __name__ == "__main__":
         try:
             target_col = header.index(read_type)
         except ValueError:
-            print("\nThe read type {0} was not found in the run list. Maybe try a different one or check the ENA website.\n".format(read_type))
+            print("\nThe read type {0} was not found in the run list. Maybe try a different one or check the ENA website.\n".format(
+                read_type))
             raise
 
-        
         for line in run_list_response:
             line = line.decode("utf8").strip().split('\t')
             project_id = line[0]
@@ -125,7 +128,7 @@ if __name__ == "__main__":
                 print("Downloading files:\n{0}".format(fastq_files))
 
             if subdir:
-                logout = "{0}{1}/".format(output_dir,project_id)
+                logout = "{0}{1}/".format(output_dir, project_id)
                 out = "{0}{1}/{2}/".format(output_dir, project_id, sample_id)
                 try:
                     os.makedirs(out)
@@ -147,7 +150,3 @@ if __name__ == "__main__":
                     print("Success.")
                 with open(logout + "runs.log", 'a') as log:
                     log.write('\t'.join([run_id, layout] + fastq_names) + '\n')
-
-
-
-

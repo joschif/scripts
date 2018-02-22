@@ -22,7 +22,7 @@ def interface(default_types):
                         help="Project accession (e.g. ERP001736, SRP000319) from a project which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/projects). Required.")
     parser.add_argument("-s", "--sample_id",
                         dest="SAMPLE",
-                        help="Sample accession (e.g. SRS560248, ERS979832) from a sample which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/samples). Must be specified with a project ID.")    
+                        help="Sample accession (e.g. SRS560248, ERS979832) from a sample which is publicly available on the EBI Metagenomics website (https://www.ebi.ac.uk/metagenomics/samples). Must be specified with a project ID.")
     parser.add_argument("-r", "--run_id",
                         dest="RUN",
                         help="Run accession (e.g. SRR1174061, ERR647655) from a run which is publicly available on the EBI Metagenomics website. Must be specified with a sample ID.")
@@ -30,14 +30,14 @@ def interface(default_types):
                         dest="OUT",
                         help="Location of the output directory, where the downloadable files get stored. Required.",
                         required=True)
-    parser.add_argument("-v", "--version", 
+    parser.add_argument("-v", "--version",
                         dest="version",
                         help="Version of the pipeline used to generate the results. Required.",
                         required=True)
     parser.add_argument("-t", "--file_type",
                         dest="type",
                         help="Supported file types are: AllFunction, AllTaxonomy, AllSequences OR a comma-separated list of supported file types: " + ', '.join(default_file_type_list) + " OR a single file type.\nDownloads all file types if not provided.",
-                        required=False)    
+                        required=False)
     parser.add_argument("--list-only",
                         dest="list_only",
                         help="Only lists the project runs without downloading them.",
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     taxonomy_file_type_list = ["5S-rRNA-FASTA", "16S-rRNA-FASTA", "23S-rRNA-FASTA", "OTU-TSV", "OTU-BIOM", "OTU-table-HDF5-BIOM", "OTU-table-JSON-BIOM", "NewickTree", "NewickPrunedTree"]
     # Default list of available file types
     default_file_type_list = sequences_file_type_list + function_file_type_list + taxonomy_file_type_list
-    
+
     args = interface(default_file_type_list)
 
     verbose = args.verbose
