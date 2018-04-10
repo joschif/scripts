@@ -117,6 +117,7 @@ if __name__ == "__main__":
                 for ID in wanted:
                     if ID in seq.name:
                         seq.write_to_file(f)
+                        wanted.remove(ID)
     else:
         # Iterate through FASTA and write to separate file if ID in <wanted>
         for seq in fasta_seqs:
@@ -124,3 +125,4 @@ if __name__ == "__main__":
                 if ID in seq.name:
                     with open(out_dir + ID + ".fa", "a") as f:
                         seq.write_to_file(f)
+                        wanted.remove(ID)
