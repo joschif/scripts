@@ -40,6 +40,12 @@ def interface():
                         metavar='<output-directory>',
                         help='Prefix for the output folder. Defaults to name of <WANTED> if omitted.')
 
+    parser.add_argument('-f', '--output-file',
+                        dest='out_file',
+                        type=str,
+                        metavar='<output-file>',
+                        help='Prefix for the output file. If given, all sequences are written to this file.')
+
     args = parser.parse_args()
     return args
 
@@ -81,6 +87,7 @@ if __name__ == "__main__":
     args = interface()
     fasta_file = args.FASTA
     wanted_file = args.WANTED
+    out_file = args.out_file
     if args.out:
         out_dir = args.out
     else:
@@ -103,9 +110,16 @@ if __name__ == "__main__":
     # Parse FASTA
     fasta_seqs = fasta_parser(fasta_file)
 
-    # Iterate through FASTA and write to file if ID in <wanted>
-    for seq in fasta_seqs:
-        for ID in wanted:
-            if ID in seq.name and len(seq.seq) > 0:
-                with open(out_dir + ID + ".fa", "a") as f:
+    if out_file:
+        # Write all sequences that match <wanted> to <out_file>
+        with open(out_file, "wt") as f:
+            for seq in fasta_seqs:
+                for ID in wanted:
                     seq.write_to_file(f)
+    else:
+        # Iterate through FASTA and write to separate file if ID in <wanted>
+        for seq in fasta_seqs:
+            for ID in wanted:
+                if ID in seq.name and len(seq.seq) > 0:
+                    with open(out_dir + ID + ".fa", "a") as f:
+                        seq.write_to_file(f)
