@@ -115,11 +115,12 @@ if __name__ == "__main__":
         with open(out_file, "wt") as f:
             for seq in fasta_seqs:
                 for ID in wanted:
-                    seq.write_to_file(f)
+                    if ID in seq.name:
+                        seq.write_to_file(f)
     else:
         # Iterate through FASTA and write to separate file if ID in <wanted>
         for seq in fasta_seqs:
             for ID in wanted:
-                if ID in seq.name and len(seq.seq) > 0:
+                if ID in seq.name:
                     with open(out_dir + ID + ".fa", "a") as f:
                         seq.write_to_file(f)
