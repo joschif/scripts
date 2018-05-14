@@ -3,6 +3,7 @@
 import gzip
 import argparse
 import os
+import sys
 
 # FUNC
 def interface():
@@ -20,7 +21,9 @@ def interface():
 
     parser.add_argument('-o', '--output-file',
                         dest='out_file',
-                        type=str,
+                        type=argparse.FileType("w"),
+                        default=sys.stdout,
+                        nargs="?",
                         metavar='<output-file>',
                         help='Prefix for the output file. If given, all lines are written to this file.')
 
@@ -44,6 +47,11 @@ def interface():
                         metavar='<id-delimiter>',
                         help='ID delimiter in column.')
 
+    parser.add_argument('--unique',
+                        dest='unique',
+                        action="store_true",
+                        help='Switch to indicate if identifier is unique in source table. Causes ID to be removed from query set if found to speed up the search.')
+
     args = parser.parse_args()
     return args
 
@@ -57,6 +65,7 @@ if __name__ == "__main__":
     delim = args.delim
     field = args.field
     id_delim = args.id_delim
+    unique_id = args.unique
 
     # Add IDs to set
     wanted = set()
@@ -68,11 +77,11 @@ if __name__ == "__main__":
 
     with open(table_file, "rt") as fin:
         # Write all lines that match <wanted> to <out_file>
-        with open(out_file, "wt") as fout:
-            for line in fin:
-                ID = line.split(delim)[field]
-                if id_delim:
-                    ID = ID.split(id_delim)[0]
-                if ID in wanted:
-                    fout.write(line)
-                    # wanted.remove(ID)
+        for line in fin:
+            ID = line.split(delim)[field]
+            if id_delim:
+                ID = ID.split(id_delim)[0]
+            if ID in wanted:
+                out_file.write(line)
+                if unique_id:
+                    wanted.remove(ID)
