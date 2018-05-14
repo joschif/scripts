@@ -81,13 +81,13 @@ if __name__ == "__main__":
             if line != "":
                 wanted.add(line)
 
-    with open(table_file, "rt") as fin:
+    with open(table_file, "rt") as f:
         # Read and write header if header == True
         if header:
             header = f.readline()
             out_file.write(header)
         # Write all lines that match <wanted> to <out_file>
-        for line in fin:
+        for line in f:
             ID = line.split(delim)[field]
             if id_delim:
                 ID = ID.split(id_delim)[0]
