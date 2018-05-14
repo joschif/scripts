@@ -52,6 +52,11 @@ def interface():
                         action="store_true",
                         help='Switch to indicate if identifier is unique in source table. Causes ID to be removed from query set if found to speed up the search.')
 
+    parser.add_argument('--header',
+                        dest='header',
+                        action="store_true",
+                        help='Switch to extract the header from the source table.')
+
     args = parser.parse_args()
     return args
 
@@ -66,6 +71,7 @@ if __name__ == "__main__":
     field = args.field
     id_delim = args.id_delim
     unique_id = args.unique
+    header = args.header   
 
     # Add IDs to set
     wanted = set()
@@ -76,6 +82,10 @@ if __name__ == "__main__":
                 wanted.add(line)
 
     with open(table_file, "rt") as fin:
+        # Read and write header if header == True
+        if header:
+            header = f.readline()
+            out_file.write(header)
         # Write all lines that match <wanted> to <out_file>
         for line in fin:
             ID = line.split(delim)[field]
