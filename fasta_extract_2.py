@@ -19,10 +19,10 @@ class Fasta(object):
         handle.write(">" + self.name + "\n")
         handle.write(self.seq + "\n")
 
-        
+
 # FUNC
 def interface():
-    parser = argparse.ArgumentParser(description="Extract sequences from a FASTA [.fasta/.fa(.gz)] file if their identifier is in a <WANTED> file. Wanted file contains one sequence identifier per line. This version requires the identifier to be space-separated from the rest of the FASTA header.")
+    parser = argparse.ArgumentParser(description="Extract sequences from a FASTA [.fasta/.fa(.gz)] file if their identifier is in a <WANTED> file. Wanted file contains one sequence identifier per line. This version requires the identifier to be the first field of the FASTA header.")
 
     parser.add_argument('FASTA',
                         type=str,
@@ -45,6 +45,18 @@ def interface():
                         type=str,
                         metavar='<output-file>',
                         help='Prefix for the output file. If given, all sequences are written to this file.')
+
+    parser.add_argument('-d', '--delimiter',
+                        dest='delim',
+                        default=" ",
+                        type=str,
+                        metavar='<delimiter>',
+                        help='Delimiter for the ID in the FASTA header.')
+
+    parser.add_argument('--unique',
+                        dest='unique',
+                        action="store_true",
+                        help='Switch to indicate if identifier is unique in source table. Causes ID to be removed from query set if found to speed up the search.')
 
     args = parser.parse_args()
     return args
@@ -94,6 +106,8 @@ if __name__ == "__main__":
         out_dir = wanted_file.split(".")[0]
     if not out_dir.endswith('/'):
         out_dir += '/'
+    delim = args.delim
+    unique = args.unique
 
     # Make output directory if it does not exist
     if not os.path.exists(out_dir):
@@ -114,15 +128,17 @@ if __name__ == "__main__":
         # Write all sequences that match <wanted> to <out_file>
         with open(out_file, "wt") as f:
             for seq in fasta_seqs:
-                ID = seq.name.split()[0]
+                ID = seq.name.split(delim)[0]
                 if ID in wanted:
                     seq.write_to_file(f)
-                    wanted.remove(ID)
+                    if unique:
+                        wanted.remove(ID)
     else:
         # Iterate through FASTA and write to separate file if ID in <wanted>
         for seq in fasta_seqs:
-            ID = seq.name.split()[0]
+            ID = seq.name.split(delim)[0]
             if ID in wanted:
                 with open(out_dir + ID + ".fa", "a") as f:
                     seq.write_to_file(f)
-                    wanted.remove(ID)
+                    if unique:
+                        wanted.remove(ID)
