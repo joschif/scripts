@@ -17,7 +17,7 @@ def interface():
     parser.add_argument('CONTIGS',
                         type=str,
                         metavar='<CONTIGS>',
-                        help='Either FASTA file with contigs or list of contig IDs.') 
+                        help='Either FASTA file with contigs or list of contig IDs.')
 
     parser.add_argument('-o', '--output-file',
                         dest='out',
@@ -67,8 +67,3 @@ if __name__ == "__main__":
             except ValueError as err:
                 print("Reference '{0}' not found.".format(ID))
                 print(err)
-
-
-
-
-

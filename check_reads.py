@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 for line in f:
                     if line.startswith('>'):
                         file.append(line.strip())
-                        break     
+                        break
             if line1.startswith('@'):
                 file.append(line1)
                 [f.readline() for n in range(3)]
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
 
     inter = []
-    for file in files: 
+    for file in files:
         if file[3][:-1] == file[4][:-1]:
             inter.append(file)
             files.remove(file)
@@ -75,22 +75,16 @@ if __name__ == "__main__":
 
     for rec in inter:
         if '.pairs.interleaved.' not in rec[2]:
-            os.rename(rec[0], rec[1] + '.pairs.interleaved.' + rec[2])                 
+            os.rename(rec[0], rec[1] + '.pairs.interleaved.' + rec[2])
     
     for rec in firsts:
         if '.pair.1.' not in rec[2] and '.pair.2.' not in rec[2]:
-            os.rename(rec[0], rec[1] + '.pair.1.' + rec[2])      
+            os.rename(rec[0], rec[1] + '.pair.1.' + rec[2])
 
     for rec in seconds:
         if '.pair.1.' not in rec[2] and '.pair.2.' not in rec[2]:
-            os.rename(rec[0], rec[1] + '.pair.2.' + rec[2])                 
-    
+            os.rename(rec[0], rec[1] + '.pair.2.' + rec[2])
+
     for rec in singles:
         if '.single.' not in rec[2]:
-            os.rename(rec[0], rec[1] + '.single.' + rec[2])                 
-    
-
-    
-
-
-
+            os.rename(rec[0], rec[1] + '.single.' + rec[2])

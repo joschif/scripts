@@ -19,7 +19,7 @@ class Fasta(object):
         handle.write(">" + self.name + "\n")
         handle.write(self.seq + "\n")
 
-
+        
 # FUNC
 def interface():
     parser = argparse.ArgumentParser(description="Extract sequences from a FASTA [.fasta/.fa(.gz)] file if their identifier is in a <WANTED> file. Wanted file contains one sequence identifier per line. This version requires the identifier to be space-separated from the rest of the FASTA header.")
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         out_dir = wanted_file.split(".")[0]
     if not out_dir.endswith('/'):
         out_dir += '/'
-    
+
     # Make output directory if it does not exist
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)

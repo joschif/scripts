@@ -94,7 +94,7 @@ if __name__ == "__main__":
         out_dir = wanted_file.split(".")[0]
     if not out_dir.endswith('/'):
         out_dir += '/'
-    
+
     # Make output directory if it does not exist
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
