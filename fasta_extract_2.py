@@ -44,11 +44,11 @@ def interface():
                         dest='out_file',
                         type=str,
                         metavar='<output-file>',
-                        help='Prefix for the output file. If given, all sequences are written to this file.')
+                        help='Prefix for the output file. If specified, all sequences are written to this file.')
 
     parser.add_argument('-d', '--delimiter',
                         dest='delim',
-                        default=" ",
+                        default="\t",
                         type=str,
                         metavar='<delimiter>',
                         help='Delimiter for the ID in the FASTA header.')
@@ -100,18 +100,14 @@ if __name__ == "__main__":
     fasta_file = args.FASTA
     wanted_file = args.WANTED
     out_file = args.out_file
-    if args.out:
-        out_dir = args.out
-    else:
-        out_dir = wanted_file.split(".")[0]
-    if not out_dir.endswith('/'):
-        out_dir += '/'
+    out_dir = args.out
+    if out_dir:
+        # Make output directory if it does not exist
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
     delim = args.delim
     unique = args.unique
 
-    # Make output directory if it does not exist
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
 
     # Add IDs to set
     wanted = set()
@@ -138,7 +134,7 @@ if __name__ == "__main__":
         for seq in fasta_seqs:
             ID = seq.name.split(delim)[0]
             if ID in wanted:
-                with open(out_dir + ID + ".fa", "a") as f:
+                with open(os.path.join(out_dir, ID + ".fa"), "a") as f:
                     seq.write_to_file(f)
                     if unique:
                         wanted.remove(ID)

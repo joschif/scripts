@@ -37,7 +37,7 @@ def interface():
     parser.add_argument('-f', '--field',
                         dest='field',
                         type=int,
-                        default="0",
+                        default="1",
                         metavar='<field>',
                         help='Field in which to look for the identifier.')
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     field = args.field
     id_delim = args.id_delim
     unique_id = args.unique
-    header = args.header   
+    header = args.header
 
     # Add IDs to set
     wanted = set()
@@ -88,7 +88,7 @@ if __name__ == "__main__":
             out_file.write(header)
         # Write all lines that match <wanted> to <out_file>
         for line in f:
-            ID = line.split(delim)[field]
+            ID = line.split(delim)[field - 1]
             if id_delim:
                 ID = ID.split(id_delim)[0]
             if ID in wanted:

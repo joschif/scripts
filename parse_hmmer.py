@@ -29,7 +29,7 @@ if __name__ == "__main__":
     dom_file = args.DOM
     out_file = args.OUT
 
-    header = ["name", "gene_accession", "tlen", "query", "hmm_accession", "qlen", "E_value_full", "score_full", "c_Evalue", "i_Evalue", "score", "hmm_start", 
+    header = ["name", "gene_accession", "tlen", "query", "hmm_accession", "qlen", "E_value_full", "score_full", "c_Evalue", "i_Evalue", "score", "hmm_start",
         "hmm_end", "ali_start", "ali_end", "env_start", "env_end", "acc", "description"]
     out_file.write("\t".join(header) + "\n")
 
