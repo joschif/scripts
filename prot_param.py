@@ -31,13 +31,14 @@ if __name__ == "__main__":
 
     fasta = SeqIO.parse(fasta_file, "fasta")
 
-    header= ["protein_id", "MW", "aromaticity", "II", "GRAVY", "pI", "helix", "turn", "sheet",
-        "extinction"]
+    header= ["protein_id", "MW", "aromaticity", "II", "GRAVY", "pI", "helix", "turn",
+        "sheet", "extinction"]
     out_file.write("\t".join(header) + "\n")
 
     for rec in fasta:
-        sequence = (str(rec.seq).replace("*", "").replace("X", "").replace("J", "L")
-            .replace("B", "N").replace("Z", "Q").replace("U", "C"))
+        sequence = (str(rec.seq).upper()
+            .replace("*", "").replace("X", "").replace("J", "L").replace("B", "N")
+            .replace("Z", "Q").replace("U", "C").replace("O", "K"))
         ID = rec.id.split("|")[-1]
         anal = ProteinAnalysis(sequence)
         mw = anal.molecular_weight()
