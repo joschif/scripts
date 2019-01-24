@@ -5,7 +5,7 @@ from Bio.SeqUtils.ProtParam import ProteinAnalysis
 
 # FUNC
 def interface():
-    parser = argparse.ArgumentParser(description="Extract sequences from a FASTA [.fasta/.fa(.gz)] file if their identifier is in a <WANTED> file. Wanted file contains one sequence identifier per line.")
+    parser = argparse.ArgumentParser(description="Calculates common parameters for each protein in a FASTA file.")
 
     parser.add_argument('FASTA',
                         type=str,
@@ -31,8 +31,8 @@ if __name__ == "__main__":
 
     fasta = SeqIO.parse(fasta_file, "fasta")
 
-    header= ["protein_id", "MW", "aromaticity", "II", "GRAVY", "pI", "helix", "turn",
-        "sheet", "extinction"]
+    header= ["protein_id", "MW", "length", "aromaticity", "II", "GRAVY", "pI", "helix",
+        "turn", "sheet", "extinction"]
     out_file.write("\t".join(header) + "\n")
 
     for rec in fasta:
@@ -40,6 +40,7 @@ if __name__ == "__main__":
             .replace("*", "").replace("X", "").replace("J", "L").replace("B", "N")
             .replace("Z", "Q").replace("U", "C").replace("O", "K"))
         ID = rec.id.split("|")[-1]
+        length = len(sequence)
         anal = ProteinAnalysis(sequence)
         mw = anal.molecular_weight()
         aro = anal.aromaticity()
@@ -51,6 +52,6 @@ if __name__ == "__main__":
         turn = sec[1]
         sheet = sec[2]
         ext = anal.molar_extinction_coefficient()[0]
-        row = [ID, mw, aro, insta, grev, ie, helix, turn, sheet, ext]
+        row = [ID, mw, length, aro, insta, grev, ie, helix, turn, sheet, ext]
         row = [str(n) for n in row]
         out_file.write("\t".join(row) + "\n")
