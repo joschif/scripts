@@ -1,0 +1,7 @@
+#!/bin/bash
+ls $@ | while read FILE;
+do
+    OUT=$(echo $FILE | cut -d. -f1).png
+    echo "$FILE --> $OUT"
+    convert $FILE -quality 100 -density 400 -resize 4000 $OUT
+done
